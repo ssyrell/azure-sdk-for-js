@@ -1,6 +1,6 @@
 import fs from "fs-extra";
 import queryString from "query-string";
-import { blobToString } from "./index.browser";
+import { blobToString } from "./browser";
 import { delay as restDelay } from "@azure/ms-rest-js";
 import * as dotenv from "dotenv";
 dotenv.config({ path: "../../.env" });
