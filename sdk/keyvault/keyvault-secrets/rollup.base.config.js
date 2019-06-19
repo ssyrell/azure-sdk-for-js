@@ -81,7 +81,7 @@ export function browserConfig(test = false, production = false) {
   if (test) {
     baseConfig.input = ["dist-esm/test/*.spec.js"];
     baseConfig.plugins.unshift(multiEntry({ exports: false }));
-    baseConfig.output.file = "dist-test/index.js";
+    baseConfig.output.file = "dist-test/index.browser.js";
     // mark fs-extra as external
     baseConfig.external = ["fs-extra"];
 
