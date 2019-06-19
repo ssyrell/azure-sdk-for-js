@@ -20,12 +20,11 @@ const banner = [
 ].join("\n");
 
 const depNames = Object.keys(pkg.dependencies);
-const input = "dist-esm/index.js";
 
-export function nodeConfig(test = false) {
+export function nodeConfig(test = false, production = false) {
   const externalNodeBuiltins = ["url"];
   const baseConfig = {
-    input: input,
+    input: "dist-esm/src/index.js",
     external: depNames.concat(externalNodeBuiltins),
     output: {
       file: "dist/index.js",
@@ -39,7 +38,7 @@ export function nodeConfig(test = false) {
 
   if (test) {
     // entry point is every test file
-    baseConfig.input = ["dist-esm/test/*.spec.js", "dist-esm/test/node/*.spec.js"];
+    baseConfig.input = ["dist-esm/test/*.spec.js"];
     baseConfig.plugins.unshift(multiEntry({ exports: false }));
 
     // different output file
@@ -56,9 +55,9 @@ export function nodeConfig(test = false) {
   return baseConfig;
 }
 
-export function browserConfig(test = false) {
+export function browserConfig(test = false, production = false) {
   const baseConfig = {
-    input: input,
+    input: "dist-esm/src/index.js",
     output: {
       file: "browser/index.js",
       format: "umd",
@@ -80,15 +79,15 @@ export function browserConfig(test = false) {
   };
 
   if (test) {
-    baseConfig.input = ["dist-esm/test/*.spec.js", "dist-esm/test/browser/*.spec.js"];
+    baseConfig.input = ["dist-esm/test/*.spec.js"];
     baseConfig.plugins.unshift(multiEntry({ exports: false }));
-    baseConfig.output.file = "dist-test/index.browser.js";
+    baseConfig.output.file = "dist-test/index.js";
     // mark fs-extra as external
     baseConfig.external = ["fs-extra"];
 
     baseConfig.context = "null";
   } else if (production) {
-    baseConfig.output.file = "browser/azure-storage-queue.min.js";
+    baseConfig.output.file = "browser/azure-keyvault-secrets.min.js";
     baseConfig.plugins.push(
       uglify({
         output: {
@@ -105,15 +104,3 @@ export function browserConfig(test = false) {
 
   return baseConfig;
 }
-
-const inputs = [];
-
-if (!process.env.ONLY_BROWSER) {
-  inputs.push(nodeConfig());
-}
-
-if (!process.env.ONLY_NODE) {
-  inputs.push(browserConfig());
-}
-
-export default inputs;

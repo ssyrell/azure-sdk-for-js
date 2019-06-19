@@ -35,6 +35,6 @@
     "lib": ["dom", "es5", "es6", "es7", "esnext"]
   },
   "compileOnSave": true,
-  "exclude": ["node_modules", "types/**", "./samples/**/*.ts", "./tests/perf/azure-sb-package/*.ts"],
-  "include": ["./src/**/*.ts", "./tests/**/*.ts"]
+  "exclude": ["node_modules", "types/**", "./samples/**/*.ts", "./test/perf/azure-sb-package/*.ts", "./test/tsconfig.test.ts"],
+  "include": ["./src/**/*.ts", "./test/**/*.ts"]
 }
