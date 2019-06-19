@@ -77,22 +77,22 @@ const isRecording = env.TEST_MODE === "record";
 const isPlayingBack = env.TEST_MODE === "playback";
 
 // IMPORTANT: These are my attempts to make this more generic without changing it significantly
-let replaceableVariables = {};
-export function setReplaceableVariables(a: object): void {
+let replaceableVariables: any;
+export function setReplaceableVariables(a: any): void {
   replaceableVariables = a;
   if (isPlayingBack) {
     // Providing dummy values to avoid the error
-    Object.keys(a).map((k) => {
+    Object.keys(a).map((k: string) => {
       env[k] = a[k];
     });
   }
 }
-let replacements = [];
+let replacements: any = [];
 export function setReplacements(maps: any): void {
   replacements = maps;
 }
 
-export function delay(milliseconds: number): Promise<void> {
+export function delay(milliseconds: number): Promise<void> | null {
   return isPlayingBack ? null : restDelay(milliseconds);
 }
 
@@ -128,9 +128,7 @@ abstract class Recorder {
    * */
   protected filterSecrets(recording: string): string {
     let updatedRecording = recording;
-    let lastRecording = recording;
     for (let k of Object.keys(replaceableVariables)) {
-      lastRecording = updatedRecording;
       const escaped = escapeRegExp(env[k]);
       updatedRecording = updatedRecording.replace(
         new RegExp(escaped, "g"),

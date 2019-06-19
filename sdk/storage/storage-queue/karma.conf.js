@@ -31,7 +31,7 @@ module.exports = function(config) {
       // polyfill service supporting IE11 missing features
       // Promise,String.prototype.startsWith,String.prototype.endsWith,String.prototype.repeat,String.prototype.includes,Array.prototype.includes,Object.keys
       "https://cdn.polyfill.io/v2/polyfill.js?features=Promise,String.prototype.startsWith,String.prototype.endsWith,String.prototype.repeat,String.prototype.includes,Array.prototype.includes,Object.keys|always",
-      "dist-test/index.browser.js",
+      "dist-esm/test/index.browser.js",
       "recordings/browsers/**/*.json"
     ],
 
@@ -44,7 +44,7 @@ module.exports = function(config) {
       "**/*.js": ["env"],
       // IMPORTANT: COMMENT following line if you want to debug in your browsers!!
       // Preprocess source file to calculate code coverage, however this will make source file unreadable
-      "dist-test/index.browser.js": ["coverage"],
+      "dist-esm/test/utils/browser.js": ["coverage"],
       "recordings/browsers/**/*.json": ["json"]
     },
 

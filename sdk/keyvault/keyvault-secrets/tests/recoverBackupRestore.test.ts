@@ -4,8 +4,6 @@ import { record, setReplaceableVariables, delay, setReplacements, env } from "./
 import { EnvironmentCredential } from "@azure/identity";
 
 describe("Secret client - restore secrets and recover backups", () => {
-  const secretValue = "SECRET_VALUE";
-  const version = "";
   let client: SecretsClient;
   let recorder: any;
 
@@ -14,7 +12,7 @@ describe("Secret client - restore secrets and recover backups", () => {
   //   we might need to factor in more environment variables.
   // - Another way to improve this is to add a specfic key per test.
   // - The environment variable is probably better named like PREFIX_KEY_NAME.
-  const secretName = `recover${env.SECRET_NAME || "SecretName"}`;
+  const secretName: string = `recover${env.SECRET_NAME || "SecretName"}`;
 
   // NOTES:
   // - These functions are probably better moved to a common utility file.
@@ -53,7 +51,7 @@ describe("Secret client - restore secrets and recover backups", () => {
     });
 
     setReplacements([
-      (recording) => recording.replace(/"access_token":"[^"]*"/g, `"access_token":"access_token"`)
+      (recording: any): any => recording.replace(/"access_token":"[^"]*"/g, `"access_token":"access_token"`)
     ]);
 
     recorder = record(this);
@@ -104,7 +102,7 @@ describe("Secret client - restore secrets and recover backups", () => {
     await client.setSecret(secretName, "RSA");
     const result = await client.backupSecret(secretName);
     assert.equal(Buffer.isBuffer(result), true, "Unexpected return value from backupSecret()");
-		assert.ok(result.length > 4500, `Unexpected length (${result.length}) of buffer from backupSecret()`);
+		assert.ok(result!.length > 4500, `Unexpected length (${result!.length}) of buffer from backupSecret()`);
     await flushSecret();
   });
 
@@ -126,7 +124,7 @@ describe("Secret client - restore secrets and recover backups", () => {
     await delay(20000);
     await client.purgeDeletedSecret(secretName);
     await delay(20000);
-    await client.restoreSecret(backup);
+    await client.restoreSecret(backup!);
     await delay(20000);
     const getResult = await client.getSecret(secretName);
     assert.equal(getResult.name, secretName, "Unexpected secret name in result from getSecret().");

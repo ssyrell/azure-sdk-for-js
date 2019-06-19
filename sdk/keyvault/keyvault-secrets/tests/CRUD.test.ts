@@ -14,7 +14,7 @@ describe("Secret client - create, read, update and delete operations", () => {
   //   we might need to factor in more environment variables.
   // - Another way to improve this is to add a specfic key per test.
   // - The environment variable is probably better named like PREFIX_KEY_NAME.
-  const secretName = `CRUD${env.SECRET_NAME || "SecretName"}`;
+  const secretName: string = `CRUD${env.SECRET_NAME || "SecretName"}`;
 
   // NOTES:
   // - These functions are probably better moved to a common utility file.
@@ -53,7 +53,7 @@ describe("Secret client - create, read, update and delete operations", () => {
     });
 
     setReplacements([
-      (recording) => recording.replace(/"access_token":"[^"]*"/g, `"access_token":"access_token"`)
+      (recording: any): any => recording.replace(/"access_token":"[^"]*"/g, `"access_token":"access_token"`)
     ]);
 
     recorder = record(this);
@@ -103,22 +103,6 @@ describe("Secret client - create, read, update and delete operations", () => {
     await flushSecret();
   });
 
-  it("cannot create a secret with a null name", async () => {
-    const secretName = null;
-    let error;
-    try {
-      await client.setSecret(secretName, "");
-      throw Error("Expecting an error but not catching one.");
-    } catch (e) {
-      error = e;
-    }
-    assert.equal(
-      error.message,
-      "secretName cannot be null or undefined.",
-      "Unexpected error while running setSecret with an empty string as the name."
-    );
-  });
-
   it("can set a secret with attributes", async () => {
     const expiryDate = new Date("3000-01-01");
     expiryDate.setMilliseconds(0);
@@ -126,7 +110,7 @@ describe("Secret client - create, read, update and delete operations", () => {
     const updated = await client.getSecret(secretName);
     assert.equal(
       expiryDate.getDate(),
-      updated.expires.getDate(),
+      updated.expires!.getDate(),
       "Expect attribute 'expires' to be defined."
     );
     await flushSecret();
@@ -143,7 +127,7 @@ describe("Secret client - create, read, update and delete operations", () => {
 
     const updated = await client.getSecret(secretName);
     assert.equal(
-      updated.expires.getDate(),
+      updated.expires!.getDate(),
       expiryDate.getDate(),
       "Expect attribute 'expires' to be updated."
     );
@@ -161,7 +145,7 @@ describe("Secret client - create, read, update and delete operations", () => {
       expires: expiryDate
     });
     assert.equal(
-      updated.expires.getDate(),
+      updated.expires!.getDate(),
       expiryDate.getDate(),
       "Expect attribute 'expires' to be updated."
     );

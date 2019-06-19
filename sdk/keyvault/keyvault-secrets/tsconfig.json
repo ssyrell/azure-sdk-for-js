@@ -31,9 +31,10 @@
     /* Other options */
     "newLine": "LF" /*	Use the specified end of line sequence to be used when emitting files: "crlf" (windows) or "lf" (unix).”*/,
     "allowJs": false /* Don't allow JavaScript files to be compiled.*/,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "lib": ["dom", "es5", "es6", "es7", "esnext"]
   },
   "compileOnSave": true,
-  "exclude": ["node_modules", "types/**", "./samples/**/*.ts", "./test/perf/azure-sb-package/*.ts"],
-  "include": ["./src/**/*.ts", "./test/**/*.ts"]
+  "exclude": ["node_modules", "types/**", "./samples/**/*.ts", "./tests/perf/azure-sb-package/*.ts"],
+  "include": ["./src/**/*.ts", "./tests/**/*.ts"]
 }
