@@ -1,7 +1,13 @@
 import * as assert from "assert";
 import { SecretsClient } from "../src";
-import { record, setReplaceableVariables, delay, setReplacements, env } from "./utils/recorder";
-import { EnvironmentCredential } from "@azure/identity";
+import {
+  record,
+  setReplaceableVariables,
+  delay,
+  setReplacements,
+  env,
+  isBrowser
+} from "./utils/recorder";
 
 describe("Secret client - restore secrets and recover backups", () => {
   let client: SecretsClient;
@@ -51,14 +57,31 @@ describe("Secret client - restore secrets and recover backups", () => {
     });
 
     setReplacements([
-      (recording: any): any => recording.replace(/"access_token":"[^"]*"/g, `"access_token":"access_token"`)
+      (recording: any): any =>
+        recording.replace(/"access_token":"[^"]*"/g, `"access_token":"access_token"`)
     ]);
 
     recorder = record(this);
 
     const vaultName = env.KEYVAULT_NAME;
     const url = `https://${vaultName}.vault.azure.net`;
-    const credential = new EnvironmentCredential();
+    let credential: any;
+
+    if (isBrowser) {
+      const { msRestNodeAuth } = require("@azure/ms-rest-nodeauth");
+      credential = await msRestNodeAuth.loginWithServicePrincipalSecret(
+        env.AZURE_CLIENT_ID,
+        env.AZURE_CLIENT_SECRET,
+        env.AZURE_TENANT_ID,
+        {
+          tokenAudience: "https://vault.azure.net"
+        }
+      );
+    } else {
+      const { EnvironmentCredential } = require("@azure/identity").default;
+      credential = new EnvironmentCredential();
+    }
+
     client = new SecretsClient(url, credential);
 
     await maybeFlushSecret();
@@ -102,7 +125,10 @@ describe("Secret client - restore secrets and recover backups", () => {
     await client.setSecret(secretName, "RSA");
     const result = await client.backupSecret(secretName);
     assert.equal(Buffer.isBuffer(result), true, "Unexpected return value from backupSecret()");
-		assert.ok(result!.length > 4500, `Unexpected length (${result!.length}) of buffer from backupSecret()`);
+    assert.ok(
+      result!.length > 4500,
+      `Unexpected length (${result!.length}) of buffer from backupSecret()`
+    );
     await flushSecret();
   });
 

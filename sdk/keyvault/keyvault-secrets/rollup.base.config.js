@@ -38,7 +38,7 @@ export function nodeConfig(test = false, production = false) {
 
   if (test) {
     // entry point is every test file
-    baseConfig.input = ["dist-esm/test/*.spec.js"];
+    baseConfig.input = ["dist-esm/*.spec.js"];
     baseConfig.plugins.unshift(multiEntry({ exports: false }));
 
     // different output file
@@ -51,7 +51,7 @@ export function nodeConfig(test = false, production = false) {
   } else if (production) {
     baseConfig.plugins.push(uglify());
   }
- 
+
   return baseConfig;
 }
 
