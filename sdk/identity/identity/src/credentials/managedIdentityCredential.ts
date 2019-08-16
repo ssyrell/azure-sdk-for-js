@@ -162,10 +162,15 @@ export class ManagedIdentityCredential implements TokenCredential {
         // Running in App Service
         authRequestOptions = this.createAppServiceMsiAuthRequest(resource, clientId);
         expiresInParser = (requestBody: any) => {
-          // Parse a date format like "06/20/2019 02:57:58 +00:00" and
+          // Parse a date format like "06/20/2019 02:57:58 AM +00:00" and
           // convert it into a JavaScript-formatted date
-          const m = requestBody.expires_on.match(/(\d\d)\/(\d\d)\/(\d\d\d\d) (\d\d):(\d\d):(\d\d) (\+|-)(\d\d):(\d\d)/)
-          return Date.parse(`${m[3]}-${m[1]}-${m[2]}T${m[4]}:${m[5]}:${m[6]}${m[7]}${m[8]}:${m[9]}`)
+          const m = requestBody.expires_on.match(/(\d\d)\/(\d\d)\/(\d\d\d\d) (\d\d):(\d\d):(\d\d) (AM|PM) (\+|-)(\d\d):(\d\d)/);
+          const period = m[7];
+          let hour = m[4];
+          if (period === "PM") {
+            hour = (Number.parseInt(hour) + 12).toString();
+          }
+          return Date.parse(`${m[3]}-${m[1]}-${m[2]}T${hour}:${m[5]}:${m[6]}${m[8]}${m[9]}:${m[10]}`)
         };
       } else {
         // Running in Cloud Shell
